@@ -3,7 +3,7 @@
       "module": "commonjs",
       "moduleResolution": "Node",
       "alwaysStrict": true,
-      "target": "ES2022",
+      "target": "ES2021",
       "baseUrl": ".",
       "paths": {
         "modules/*": ["./src/modules/*"],
