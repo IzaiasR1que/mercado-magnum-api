@@ -8,7 +8,7 @@ class ProductController {
   async findAll(req, res, next) {
     try {
       const products = await FindAllProductsService.handle();
-      return next(res.status(products.length > 0 ? 200 : 404).json(products.length > 0 ? products : { message: 'Não há produtos cadastrados.' }));
+      return res.status(products.length > 0 ? 200 : 404).json(products.length > 0 ? products : { message: 'Não há produtos cadastrados.' });
     } catch (err) {
       return next(err);
     }
@@ -17,7 +17,7 @@ class ProductController {
   async findSingle(req, res, next) {
     try {
       const product = await FindSingleProductService.handle(req.params.id);
-      return next(res.status(product ? 200 : 404).json(product || { message: 'O produto informado não existe.' }));
+      return res.status(product ? 200 : 404).json(product || { message: 'O produto informado não existe.' });
     } catch (err) {
       return next(err);
     }
@@ -26,7 +26,7 @@ class ProductController {
   async create(req, res, next) {
     try {
       await CreateProductService.handle(req.body);
-      return next(res.status(200).json({ status: 'Sucesso', message: 'Produto cadastrado com sucesso!' }));
+      return res.status(200).json({ status: 'Sucesso', message: 'Produto cadastrado com sucesso!' });
     } catch (err) {
       return next(err);
     }
@@ -35,7 +35,7 @@ class ProductController {
   async updateSingle(req, res, next) {
     try {
       await UpdateSingleProductService.handle(req.body, req.params.id);
-      return next(res.status(200).json({ status: 'Sucesso', message: 'Produto atualizado com sucesso!' }));
+      return res.status(200).json({ status: 'Sucesso', message: 'Produto atualizado com sucesso!' });
     } catch (err) {
       return next(err);
     }
@@ -44,7 +44,7 @@ class ProductController {
   async updateMany(req, res, next) {
     try {
       await UpdateManyProductsService.handle(req.body);
-      return next(res.status(200).json({ status: 'Sucesso', message: 'Produtos atualizados com sucesso!' }));
+      return res.status(200).json({ status: 'Sucesso', message: 'Produtos atualizados com sucesso!' });
     } catch (err) {
       return next(err);
     }
@@ -53,7 +53,7 @@ class ProductController {
   async delete(req, res, next) {
     try {
       await DeleteProductService.handle(req.params.id);
-      return next(res.status(200).json({ status: 'Sucesso', message: 'Produto excluído com sucesso!' }));
+      return res.status(200).json({ status: 'Sucesso', message: 'Produto excluído com sucesso!' });
     } catch (err) {
       return next(err);
     }

@@ -22,9 +22,10 @@ const { sequelize } = __require('@models');
 const Router = __require('@shared/infra/http/routes');
 
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
-app.use(require('cors')());
+app.use(cors());
 
 // Test sequelize connection
 app.use(async (req, res, next) => {
@@ -43,16 +44,14 @@ app.use(async (req, res, next) => {
 
 app.use(Router);
 
-// Errors tratment and payload return
+// Errors tratment
 // eslint-disable-next-line no-unused-vars
-app.use((payload, req, res, next) => {
-  if (payload instanceof AppError) {
+app.use((error, req, res, next) => {
+  if (error instanceof AppError) {
     return res
-      .status(payload.statusCode)
-      .json({ status: 'Error', message: payload.message });
+      .status(error.statusCode)
+      .json({ status: 'Error', message: error.message });
   }
-
-  if (payload instanceof express) return payload;
 
   return res
     .status(500)
