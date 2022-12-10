@@ -1,10 +1,7 @@
-const Router = require('express')()
+const Router = require('express')();
 
-const CreateProductService = __require('@modules/product/services/CreateProductService')
+const ProductRouter = __require('@modules/product/infra/http/routes/product.routes');
 
-Router.get('/user', (req, res, next) => {
-    CreateProductService.handle(req)
-    return next(res.status(200).json({message: 'Success!'}))
-})
+Router.use('/product', ProductRouter);
 
-module.exports = Router
+module.exports = Router;

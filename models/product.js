@@ -1,7 +1,8 @@
-'use strict';
+/* eslint-disable no-unused-vars */
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -16,29 +17,29 @@ module.exports = (sequelize, DataTypes) => {
   Product.init({
     description: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     price: {
-      type: DataTypes.DECIMAL,
-      allowNull: false
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
     qnt: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     qnt_min: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     qnt_max: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     id: {
       primaryKey: true,
       type: DataTypes.INTEGER,
-      autoIncrement: true
-    }
+      autoIncrement: true,
+    },
   }, {
     sequelize,
     modelName: 'Product',

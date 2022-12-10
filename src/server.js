@@ -1,58 +1,67 @@
+/* global __require */
+
 const path = require('path');
 
-global.__require = function(module) {
+global.__require = function __require(module) {
   const customPaths = [
-  ['@models', path.join(__dirname, '../models')],
-  ['@shared', path.join(__dirname, 'shared')],
-  ['@modules', path.join(__dirname, 'modules')]]
-  const cPath = customPaths.find(path => path[0] === module.split('/')[0])
+    ['@models', path.join(__dirname, '../models')],
+    ['@shared', path.join(__dirname, 'shared')],
+    ['@modules', path.join(__dirname, 'modules')]];
+  const cPath = customPaths.find((pathName) => pathName[0] === module.split('/')[0]);
 
-  return cPath ? require(path.join(cPath[1], module.split('/').slice(1).join('/'))) 
-  : require(path.join(__dirname, module))
-}
+  return cPath ? require(path.join(cPath[1], module.split('/').slice(1).join('/')))
+    : require(path.join(__dirname, module));
+};
 
-const { AppError } = __require('@shared/errors/AppError');
-const express = require('express')
-require('dotenv').config()
+const AppError = __require('@shared/errors/AppError');
+const express = require('express');
+require('dotenv').config();
 
-const { sequelize } = __require('@models')
+const { sequelize } = __require('@models');
 
-const Router = __require('@shared/infra/http/routes')
+const Router = __require('@shared/infra/http/routes');
 
-const app = express()
+const app = express();
 
 app.use(express.json());
-app.use(require('cors')())
+app.use(require('cors')());
 
-//Test sequelize connection
+// Test sequelize connection
 app.use(async (req, res, next) => {
   try {
-      await sequelize.authenticate();
-      console.log('Conexão com o banco de dados estabelecida com sucesso!');
-      return next()
-    } catch (error) {
-      return next(new AppError(`Não foi possível estabelecer conexão com o banco de dados: ${error}`))
-    }
-})
+    await sequelize.authenticate();
+    return next();
+  } catch (error) {
+    return next(res
+      .status(500)
+      .json({
+        status: 'Error',
+        message: `Não foi possível estabelecer conexão com o banco de dados: ${error}`,
+      }));
+  }
+});
 
+app.use(Router);
 
-app.use(Router)
+// Errors tratment and payload return
+// eslint-disable-next-line no-unused-vars
+app.use((payload, req, res, next) => {
+  if (payload instanceof AppError) {
+    return res
+      .status(payload.statusCode)
+      .json({ status: 'Error', message: payload.message });
+  }
 
+  if (payload instanceof express) return payload;
 
-app.use((error, req, res, next) => {
-  if(error instanceof AppError) {
-      return res.status(error.statusCode).json({status: 'Error', message: error.message})
-    }
-    return res.status(500).json({status: 'Unknown Error', message: 'Erro desconhecido'})
-})
-
-app.use((payload) => {
-  sequelize.close()
-  return payload
-})
+  return res
+    .status(500)
+    .json({ status: 'Unknown Error', message: 'An error has occurred' });
+});
 
 const port = process.env.PORT || 3030;
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`😎 Server listening on port ${port}`);
 });

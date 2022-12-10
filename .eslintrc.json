@@ -1,8 +1,7 @@
 {
     "env": {
         "commonjs": true,
-        "es2021": true,
-        "node": true
+        "es2021": true
     },
     "extends": "airbnb-base",
     "overrides": [
@@ -11,7 +10,11 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "no-console": "off",
-        "import/no-unresolved": "off"
+        "no-underscore-dangle": "off",
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "no-undef": "off",
+        "class-methods-use-this": "off",
+        "camelcase": "off"
     }
 }
